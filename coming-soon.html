@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#00182f">
+  <title>Platform Under Development | Velmont University</title>
+  <link rel="icon" href="assets/icons/favicon.ico?v=crest-20261104" sizes="any">
+  <link rel="apple-touch-icon" href="assets/icons/apple-touch-icon.png?v=crest-20261104">
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+  <main class="placeholder-page">
+    <section class="placeholder-card" aria-labelledby="placeholder-title">
+      <img src="assets/brand/velmont-header.webp" alt="Velmont University">
+      <span class="status-badge">Prototype destination</span>
+      <h1 id="placeholder-title">Platform Under Development</h1>
+      <p id="placeholder-message">This area is prepared for a later prototype phase. Details will be added as academic and operational content is reviewed.</p>
+      <a class="btn btn--primary" href="index.html">Return to homepage</a>
+    </section>
+  </main>
+  <script>
+    const params = new URLSearchParams(window.location.search);
+    const section = params.get('section');
+    if (section) {
+      document.title = section + ' | Velmont University';
+      document.getElementById('placeholder-title').textContent = section;
+      document.getElementById('placeholder-message').textContent = 'This ' + section + ' experience is intentionally reserved for a later prototype phase. Details will be added as the relevant academic, student-service or technical content is reviewed.';
+    }
+  </script>
+</body>
+</html>

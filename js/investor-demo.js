@@ -1,0 +1,11 @@
+(function(){
+ 'use strict';const c=window.VELMONT_CONTENT,e=window.VELMONT_UI.escapeHTML;
+ const flag='velmont-investor-demo';
+ const login=document.getElementById('investor-form');
+ const disclosure=document.getElementById('investor-disclosure');if(disclosure)disclosure.textContent=c.interactive.investorDisclosure;
+ if(login){login.addEventListener('submit',event=>{event.preventDefault();const username=document.getElementById('demo-username'),password=document.getElementById('demo-password');if(username.value.trim()!=='demo'||password.value!=='velmont'){document.getElementById('login-status').textContent='Use the displayed demo credentials: demo / velmont.';return;}try{sessionStorage.setItem(flag,'active');}catch{}password.value='';location.href='investor-portal.html';});}
+ const portal=document.getElementById('investor-dashboard');if(!portal)return;
+ const get=path=>path.split('.').reduce((v,k)=>v&&v[k],c);
+ portal.innerHTML=`<p class="review-note">${e(c.interactive.investorDisclosure)} Direct URL access is available; this is a demonstration dashboard.</p><div class="decision-cards">${c.interactive.investorSections.map(([title,path,url])=>`<article class="content-card"><h2>${e(title)}</h2><p>${e(get(path))}</p><a class="text-link" href="${e(url)}">Explore ${e(title.toLowerCase())} →</a></article>`).join('')}</div><section id="investor-roadmap" class="page-section"><h2>Development roadmap</h2><p>${e(c.university.statusDetail)}</p><div class="decision-cards">${c.roadmap.map(item=>`<article class="content-card"><span class="section-kicker">${e(item.period)}</span><h3>${e(item.title)}</h3><p>${e(item.text)}</p></article>`).join('')}</div></section><section id="investor-capabilities"><h2>Prototype capabilities</h2><ul>${c.interactive.capabilities.map(text=>`<li>${e(text)}</li>`).join('')}</ul></section><section id="investor-resources" class="page-section"><h2>Documents and resources</h2><p>${e(c.interactive.investorResources)}</p><a href="contact.html" class="text-link">Contact details coming soon</a></section>`;
+ document.getElementById('demo-logout').addEventListener('click',()=>{try{sessionStorage.removeItem(flag);}catch{}location.href='investor-login.html';});
+})();
