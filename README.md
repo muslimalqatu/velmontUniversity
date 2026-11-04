@@ -22,3 +22,4 @@ This package has not been committed to GitHub or deployed to Netlify. After revi
 `academic-area.html?area=business`, `?area=information-technology` and `?area=healthcare` retain client-side redirects to the new college or Health Informatics destinations. No server routing dependency is required.
 
 The external Botpress Knowledge Base and bot workflow require a separate update. See `docs/Botpress_and_PDF_Handoff.md`. No scripted advisor or simulated email flow is restored.
+
