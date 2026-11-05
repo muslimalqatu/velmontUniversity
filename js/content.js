@@ -659,19 +659,43 @@ window.VELMONT_CONTENT = {
           "cards": [
             {
               "title": "Explore a planned degree",
-              "text": "Compare academic focus, concentrations and possible career directions."
+              "text": "Compare academic focus, concentrations and possible career directions.",
+              "links": [
+                {
+                  "label": "Explore Programs",
+                  "url": "programs.html"
+                }
+              ]
             },
             {
               "title": "Review eligibility and preparation",
-              "text": "Check the program’s entry requirements and location availability when published."
+              "text": "Check the program’s entry requirements and location availability when published.",
+              "links": [
+                {
+                  "label": "Eligibility and preparation",
+                  "url": "#requirements"
+                }
+              ]
             },
             {
               "title": "Discuss previous learning and support needs",
-              "text": "Review the proposed evaluation process and identify practical barriers or assistance that may help."
+              "text": "Review the proposed evaluation process and identify practical barriers or assistance that may help.",
+              "links": [
+                {
+                  "label": "Transfer Credit and Prior Learning",
+                  "url": "transfer.html"
+                }
+              ]
             },
             {
               "title": "Review your study and financial plan",
-              "text": "Understand remaining requirements, semester scheduling, internship expectations and tuition plus other expenses."
+              "text": "Understand remaining requirements, semester scheduling, internship expectations and tuition plus other expenses.",
+              "links": [
+                {
+                  "label": "Tuition and Fees",
+                  "url": "tuition-fees.html"
+                }
+              ]
             },
             {
               "title": "Apply when admissions open",
@@ -679,32 +703,16 @@ window.VELMONT_CONTENT = {
             },
             {
               "title": "Prepare to begin",
-              "text": "After admission and enrollment, complete orientation and review your first-semester plan with an advisor."
+              "text": "After admission and enrollment, complete orientation and review your first-semester plan with an advisor.",
+              "links": [
+                {
+                  "label": "Orientation and registration planning",
+                  "url": "student-success.html#registration-planning"
+                }
+              ]
             }
           ],
-          "numbered": true,
-          "links": [
-            {
-              "label": "Explore Programs",
-              "url": "programs.html"
-            },
-            {
-              "label": "Eligibility and preparation",
-              "url": "#requirements"
-            },
-            {
-              "label": "Transfer Credit and Prior Learning",
-              "url": "transfer.html"
-            },
-            {
-              "label": "Tuition and Fees",
-              "url": "tuition-fees.html"
-            },
-            {
-              "label": "Orientation and registration planning",
-              "url": "student-success.html#registration-planning"
-            }
-          ]
+          "numbered": true
         },
         {
           "id": "requirements",
