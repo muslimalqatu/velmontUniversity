@@ -19,11 +19,47 @@
   function programCard(p){return `<article class="program-card"><span class="status-badge">Planned for Fall 2029</span><h3>${a(p.url,p.title)}</h3><p>${e(p.college)}</p><p>${e(p.description)}</p><p><strong>${p.level==='undergraduate'?'120 credits · $45,000 planned tuition only':'36 credits · $20,000 planned tuition only'}</strong></p><p>Semester terms; online instruction${p.level==='undergraduate'?'; required partner-site internship':''}. Other expenses separate.</p></article>`;}
   function programs(){
     const all=c.academicPortfolio.programs;
-    root.innerHTML=hero('Explore planned degree programs.','Velmont University plans to launch six bachelor’s degrees and two master’s degrees in Fall 2029. Explore each program’s focus, concentrations and possible career directions. Programs remain subject to academic review, required approvals and launch readiness.','Programs')+section('program-directory','Degree programs',`<p>Bachelor’s degrees: 120 credits; $45,000 planned tuition; semester terms; online instruction with a required partner-site internship.</p><p>Master’s degrees: 36 credits; $20,000 planned tuition; semester terms; online instruction.</p><p>Tuition excludes required fees and other study expenses. Program durations and detailed curricula will be published when finalized.</p><form id="program-filters" class="program-filters" role="search" aria-label="Filter planned programs"><label>Study level<select name="level"><option value="all">All degree levels</option><option value="undergraduate">Bachelor’s Degrees</option><option value="graduate">Master’s Degrees</option></select></label><label>College<select name="college"><option value="all">All colleges</option>${c.colleges.map(x=>`<option value="${e(x.id)}">${e(x.title)}</option>`).join('')}</select></label><label>Subject<select name="subject"><option value="all">All subjects</option>${[...new Set(all.map(p=>p.subject))].map(x=>`<option>${e(x)}</option>`).join('')}</select></label><button type="reset" class="btn btn--secondary">Reset filters</button></form><p id="program-count" role="status"></p><div id="degree-results" class="program-grid catalog-grid"></div>`)+section('colleges','Explore our planned colleges',links(c.colleges.map(x=>({label:x.title,url:x.url}))))+section('planning-status','Planning status',notice());
+    const unique = (records, key) => [...new Set(records.map(program => program[key]))];
+    const levelLabel = level => c.academicPortfolio[level]?.label || level;
+    const collegeLabel = id => all.find(program => program.collegeId === id)?.college || id;
+    const optionHTML = (values, label) => values.map(value => `<option value="${e(value)}">${e(label(value))}</option>`).join('');
+    root.innerHTML=hero('Explore planned degree programs.','Velmont University plans to launch six bachelor’s degrees and two master’s degrees in Fall 2029. Explore each program’s focus, concentrations and possible career directions. Programs remain subject to academic review, required approvals and launch readiness.','Programs')+section('program-directory','Degree programs',`<p>Bachelor’s degrees: 120 credits; $45,000 planned tuition; semester terms; online instruction with a required partner-site internship.</p><p>Master’s degrees: 36 credits; $20,000 planned tuition; semester terms; online instruction.</p><p>Tuition excludes required fees and other study expenses. Program durations and detailed curricula will be published when finalized.</p><form id="program-filters" class="program-filters" role="search" aria-label="Filter planned programs"><label>Study level<select name="level"><option value="all">All degree levels</option>${optionHTML(unique(all, 'level'), levelLabel)}</select></label><label>College<select name="college"><option value="all">All colleges</option>${optionHTML(unique(all, 'collegeId'), collegeLabel)}</select></label><label>Subject<select name="subject"><option value="all">All subjects</option>${optionHTML(unique(all, 'subject'), value => value)}</select></label><button type="reset" class="btn btn--secondary">Reset filters</button></form><p id="program-count" role="status"></p><div id="degree-results" class="program-grid catalog-grid"></div>`)+section('colleges','Explore our planned colleges',links(c.colleges.map(x=>({label:x.title,url:x.url}))))+section('planning-status','Planning status',notice());
     const form=document.getElementById('program-filters');
     for(const name of ['level','college','subject']){const value=params.get(name);if(value&&[...form.elements[name].options].some(o=>o.value===value))form.elements[name].value=value;}
-    function update(){const rows=all.filter(p=>(form.elements.level.value==='all'||p.level===form.elements.level.value)&&(form.elements.college.value==='all'||p.collegeId===form.elements.college.value)&&(form.elements.subject.value==='all'||p.subject===form.elements.subject.value));document.getElementById('program-count').textContent=`${rows.length} planned degree${rows.length===1?'':'s'}`;document.getElementById('degree-results').innerHTML=rows.length?rows.map(programCard).join(''):'<p>No programs match these filters. Try another combination or reset the filters.</p>';const q=new URLSearchParams();for(const name of ['level','college','subject'])if(form.elements[name].value!=='all')q.set(name,form.elements[name].value);history.replaceState(null,'','programs.html'+(q.size?'?'+q:'')+location.hash);}
-    form.addEventListener('change',update);form.addEventListener('submit',ev=>ev.preventDefault());form.addEventListener('reset',()=>{for(const name of ['level','college','subject'])form.elements[name].value='all';update();});update();
+    const fields = { level: form.elements.level, college: form.elements.college, subject: form.elements.subject };
+    function setOptions(field, values, defaultLabel, label) {
+      const previous = field.value;
+      const options = [new Option(defaultLabel, 'all'), ...values.map(value => new Option(label(value), value))];
+      field.replaceChildren(...options);
+      field.value = values.includes(previous) ? previous : 'all';
+    }
+    function update(changed) {
+      const previousSubject = fields.subject.value;
+      // Keep the most recently changed parent; clear an incompatible other parent.
+      if (fields.level.value !== 'all' && fields.college.value !== 'all' &&
+          !all.some(program => program.level === fields.level.value && program.collegeId === fields.college.value)) {
+        fields[changed === 'college' ? 'level' : 'college'].value = 'all';
+      }
+      setOptions(fields.level, unique(all.filter(program => fields.college.value === 'all' || program.collegeId === fields.college.value), 'level'), 'All degree levels', levelLabel);
+      setOptions(fields.college, unique(all.filter(program => fields.level.value === 'all' || program.level === fields.level.value), 'collegeId'), 'All colleges', collegeLabel);
+      const context = all.filter(program => (fields.level.value === 'all' || program.level === fields.level.value) && (fields.college.value === 'all' || program.collegeId === fields.college.value));
+      setOptions(fields.subject, unique(context, 'subject'), 'All subjects', value => value);
+      const rows = context.filter(program => fields.subject.value === 'all' || program.subject === fields.subject.value);
+      const subjectReset = previousSubject !== 'all' && fields.subject.value === 'all';
+      document.getElementById('program-count').textContent = `${rows.length} planned degree${rows.length === 1 ? '' : 's'}` + (subjectReset ? '. Subject reset to All subjects because it is unavailable for this level and college.' : '');
+      document.getElementById('degree-results').innerHTML = rows.length ? rows.map(programCard).join('') : '<p>No planned programs match this combination. Change a filter or reset the filters to explore all planned programs.</p>';
+      const query = new URLSearchParams();
+      for (const name of ['level','college','subject']) if (fields[name].value !== 'all') query.set(name, fields[name].value);
+      history.replaceState(null, '', 'programs.html' + (query.size ? '?' + query : '') + location.hash);
+    }
+    form.addEventListener('change', event => update(event.target.name));
+    form.addEventListener('submit', event => event.preventDefault());
+    form.addEventListener('reset', event => {
+      event.preventDefault();
+      for (const field of Object.values(fields)) field.value = 'all';
+      update();
+    });
+    update();
   }
   function degree(){
     const p=c.academicPortfolio.programs.find(x=>x.id===document.body.dataset.record);if(!p)return;

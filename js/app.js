@@ -58,9 +58,9 @@
           <a class="footer-brand-lockup" href="index.html" aria-label="Velmont University home"><img src="assets/brand/velmont-footer.webp" width="800" height="634" alt="Velmont University — Turning Knowledge Into Practice"></a>
           <p id="footer-status"></p>
         </div>
-        ${[[0,3],[1,4],[2,5]].map(indices => `<div class="footer-column">${indices.map(index => { const group=content.navigation[index]; return `<section class="footer-col"><h2>${escapeHTML(group.label)}</h2>${group.items.map(item => `<a href="${route(item)}">${escapeHTML(item)}</a>`).join("")}</section>`; }).join("")}</div>`).join("")}
+        ${[[0,3],[1,4],[2,5]].map(indices => `<div class="footer-column">${indices.map(index => { const group=content.navigation[index]; return `<section class="footer-col"><h2>${escapeHTML(group.label)}</h2>${(group.footerItems || group.items).map(item => `<a href="${route(item)}">${escapeHTML(item)}</a>`).join("")}</section>`; }).join("")}</div>`).join("")}
       </div>
-      <nav class="footer-utilities" aria-label="Footer utilities"><a href="search.html">Search</a><a href="ask-velmont.html">Ask Velmont · Demo</a><a href="contact.html">Contact details coming soon</a><a href="policies.html">Policies</a></nav>
+      <nav class="footer-utilities" aria-label="Footer utilities"><a href="search.html">Search</a><a href="ask-velmont.html" data-chat-trigger>Chat with Us</a><a href="contact.html">Contact details coming soon</a><a href="policies.html">Policies</a></nav>
       <div class="footer-bottom">
         <span>© 2026 Velmont University. Prototype for planning and demonstration.</span>
         <span data-content="university.admissionsStatus"></span>
@@ -336,6 +336,19 @@
   }
 
   function initBotpressWebchat() {
+  let webchatReady = false;
+  // Preserve a real fallback link for script failures, loading and modified clicks.
+  document.addEventListener("click", event => {
+    const trigger = event.target.closest?.("a[data-chat-trigger]");
+    if (!trigger || event.defaultPrevented || event.button !== 0 || event.ctrlKey || event.metaKey || event.shiftKey || event.altKey) return;
+    if (!webchatReady || typeof window.botpress?.open !== "function") return;
+    try {
+      window.botpress.open();
+      event.preventDefault();
+    } catch (_) {
+      // Follow the existing ask-velmont.html href if the widget cannot open.
+    }
+  });
   if (document.querySelector('script[data-botpress-webchat="inject"]')) return;
 
   const injectScript = document.createElement("script");
@@ -343,6 +356,8 @@
   injectScript.setAttribute("data-botpress-webchat", "inject");
 
   injectScript.onload = () => {
+    // Register before loading the existing configuration so the ready event is not missed.
+    window.botpress?.on?.("webchat:initialized", () => { webchatReady = true; });
     if (document.querySelector('script[data-botpress-webchat="config"]')) return;
 
     const configScript = document.createElement("script");

@@ -1,4 +1,4 @@
-/** November 3, 2026 guide: planning copy, not policy approval. */
+/** November 3, 2026 guide with November 5 management-directed navigation amendments. */
 window.VELMONT_CONTENT = {
   "university": {
     "name": "Velmont University",
@@ -20,7 +20,7 @@ window.VELMONT_CONTENT = {
     "title": "Turn knowledge into practice.",
     "body": "Velmont University is developing eight online bachelor’s and master’s degrees in technology, business and health informatics. With a planned first enrollment in Fall 2029, our initial focus is serving students in Illinois through semester-based online instruction, practical learning and human guidance. Every bachelor’s degree includes a required internship at a partner site. Programs and services remain subject to required approvals and launch readiness.",
     "primaryCta": "Explore Programs",
-    "secondaryCta": "Ask Velmont"
+    "secondaryCta": "Chat with Us"
   },
   "academicModel": {
     "title": "A student path designed to be clear",
@@ -505,12 +505,20 @@ window.VELMONT_CONTENT = {
     "Local Students": "student-information.html#local-students",
     "Tuition & Fees": "tuition-fees.html",
     "Transfer / Previous Learning": "transfer.html",
-    "Scholarships": "scholarships.html"
+    "Scholarships": "scholarships.html",
+    "Explore All Programs": "programs.html",
+    "Become a Student": "student-information.html#local-students",
+    "International Students": "student-information.html#international-students"
   },
   "navigation": [
     {
       "label": "Programs",
       "items": [
+        "Explore All Programs",
+        "College of Computer Science and Information Technology",
+        "College of Business Administration and Health Sciences"
+      ],
+      "footerItems": [
         "All Programs",
         "Bachelor’s Degrees",
         "Master’s Degrees",
@@ -521,6 +529,13 @@ window.VELMONT_CONTENT = {
     {
       "label": "Admissions",
       "items": [
+        "Admissions Overview",
+        "Become a Student",
+        "International Students",
+        "Transfer Credit and Prior Learning",
+        "Returning to Study"
+      ],
+      "footerItems": [
         "Admissions Overview",
         "Illinois and US Students",
         "Transfer Credit and Prior Learning",
