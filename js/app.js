@@ -109,26 +109,117 @@
   function renderDecisionFactors() {
     const root = qs("#decision-grid");
     if (!root) return;
-    root.innerHTML = content.decisionFactors.map(item => `
+    root.innerHTML = content.decisionFactors.map((item, index) => `
       <article class="decision-card">
-        <span class="decision-number" aria-hidden="true">${item.number}</span>
-        <h3>${item.title}</h3>
-        <p>${item.text}</p>
-        <a class="text-link" href="${item.url}">Explore ${item.title.toLowerCase()} →</a>
+        <button class="decision-toggle" type="button" hidden aria-expanded="false" aria-controls="decision-detail-${index}" aria-label="${escapeHTML(item.title)}: show or hide details"></button>
+        <div class="decision-flip-inner">
+          <div class="decision-face decision-front"><h3>${escapeHTML(item.title)}</h3></div>
+          <div class="decision-face decision-back" id="decision-detail-${index}">
+            <p>${escapeHTML(item.text)}</p>
+            <a class="text-link" href="${escapeHTML(item.url)}">Explore ${escapeHTML(item.title.toLowerCase())} →</a>
+          </div>
+        </div>
       </article>
     `).join("");
+
+    const cards = qsa('.decision-card', root);
+    const canHover = window.matchMedia('(hover: hover) and (pointer: fine)');
+    function setOpen(card, open) {
+      card.classList.toggle('is-open', open);
+      qs('.decision-toggle', card).setAttribute('aria-expanded', String(open));
+      const back = qs('.decision-back', card);
+      back.inert = !open;
+      back.setAttribute('aria-hidden', String(!open));
+      qs('.decision-front', card).setAttribute('aria-hidden', String(open));
+    }
+    function reveal(card) {
+      cards.forEach(other => setOpen(other, other === card));
+    }
+    cards.forEach(card => {
+      const toggle = qs('.decision-toggle', card);
+      let keyboardInteraction = false;
+      card.classList.add('is-flippable');
+      toggle.hidden = false;
+      setOpen(card, false);
+      toggle.addEventListener('click', () => {
+        if (card.classList.contains('is-open')) setOpen(card, false);
+        else reveal(card);
+      });
+      card.addEventListener('pointerdown', () => { keyboardInteraction = false; });
+      card.addEventListener('pointerenter', event => {
+        if (event.pointerType === 'mouse' && canHover.matches) reveal(card);
+      });
+      card.addEventListener('pointerleave', event => {
+        if (event.pointerType === 'mouse' && !(keyboardInteraction && card.contains(document.activeElement))) setOpen(card, false);
+      });
+      card.addEventListener('keydown', event => {
+        keyboardInteraction = true;
+        if (event.key === 'Escape') {
+          setOpen(card, false);
+          toggle.focus();
+          event.preventDefault();
+        }
+      });
+      card.addEventListener('focusout', event => {
+        if (!card.contains(event.relatedTarget)) setOpen(card, false);
+      });
+    });
   }
 
   function renderPrinciples() {
     const root = qs("#principles-grid");
     if (!root) return;
-    root.innerHTML = content.academicModel.principles.map(item => `
+    root.innerHTML = content.academicModel.principles.map((item, index) => `
       <article class="principle-card">
-        <span class="principle-mark" aria-hidden="true"></span>
-        <h3>${item.title}</h3>
-        <p>${item.text}</p>
+        <button class="principle-toggle" type="button" hidden aria-expanded="false" aria-controls="principle-detail-${index}" aria-label="${escapeHTML(item.title)}: show or hide details"></button>
+        <h3>${escapeHTML(item.title)}</h3>
+        <p id="principle-detail-${index}">${escapeHTML(item.text)}</p>
       </article>
     `).join("");
+
+    const cards = qsa('.principle-card', root);
+    const canHover = window.matchMedia('(hover: hover) and (pointer: fine)');
+    function setOpen(card, open) {
+      card.classList.toggle('is-revealed', open);
+      qs('.principle-toggle', card).setAttribute('aria-expanded', String(open));
+      const detail = qs('p', card);
+      detail.inert = !open;
+      detail.setAttribute('aria-hidden', String(!open));
+    }
+    function reveal(card) { cards.forEach(other => setOpen(other, other === card)); }
+    cards.forEach(card => {
+      const toggle = qs('.principle-toggle', card), title = qs('h3', card);
+      let keyboardInteraction = false;
+      card.classList.add('is-revealable');
+      toggle.hidden = false;
+      const sizeTitle = () => card.style.setProperty('--principle-title-height', `${title.offsetHeight}px`);
+      sizeTitle();
+      // Reserve the actual title height, including wrapping and font changes.
+      if ('ResizeObserver' in window) new ResizeObserver(sizeTitle).observe(title);
+      setOpen(card, false);
+      toggle.addEventListener('click', () => {
+        if (card.classList.contains('is-revealed')) setOpen(card, false);
+        else reveal(card);
+      });
+      card.addEventListener('pointerdown', () => { keyboardInteraction = false; });
+      card.addEventListener('pointerenter', event => {
+        if (event.pointerType === 'mouse' && canHover.matches) reveal(card);
+      });
+      card.addEventListener('pointerleave', event => {
+        if (event.pointerType === 'mouse' && !(keyboardInteraction && card.contains(document.activeElement))) setOpen(card, false);
+      });
+      card.addEventListener('keydown', event => {
+        keyboardInteraction = true;
+        if (event.key === 'Escape') {
+          setOpen(card, false);
+          toggle.focus();
+          event.preventDefault();
+        }
+      });
+      card.addEventListener('focusout', event => {
+        if (!card.contains(event.relatedTarget)) setOpen(card, false);
+      });
+    });
   }
 
   function renderLearningExamples() {

@@ -565,3 +565,125 @@ body[data-milestone="4"] .page-links a { min-height: 44px; display: inline-flex;
   .brand img { width: 108px; height: auto; }
   .header-inner { min-height: 96px; }
 }
+
+/* Homepage H03 decision cards: content-sized faces keep the grid stable. */
+#decision-grid .decision-card.is-flippable {
+  position: relative;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  perspective: 1200px;
+  min-width: 0;
+}
+#decision-grid .is-flippable .decision-flip-inner {
+  position: relative;
+  z-index: 3;
+  pointer-events: none;
+  display: grid;
+  height: 100%;
+  min-height: 220px;
+  transform-style: preserve-3d;
+  transition: transform .38s ease;
+}
+#decision-grid .is-flippable.is-open .decision-flip-inner { transform: rotateY(180deg); }
+#decision-grid .is-flippable .decision-face {
+  grid-area: 1 / 1;
+  min-width: 0;
+  padding: 1.45rem;
+  border: 1px solid #e3ded1;
+  border-radius: var(--radius-md);
+  background: #fff;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  pointer-events: none;
+}
+#decision-grid .is-flippable .decision-front { display: grid; place-items: center; text-align: center; }
+#decision-grid .is-flippable .decision-front h3 { margin: 0; }
+#decision-grid .is-flippable .decision-back {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  transform: rotateY(180deg);
+}
+#decision-grid .is-flippable .decision-back .text-link { margin-top: auto; align-self: flex-start; }
+#decision-grid .is-flippable.is-open .decision-back .text-link { position: relative; z-index: 3; pointer-events: auto; }
+#decision-grid .is-flippable .decision-toggle {
+  display: block;
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  width: 100%;
+  border: 0;
+  border-radius: var(--radius-md);
+  padding: 0;
+  background: transparent;
+  cursor: pointer;
+  touch-action: manipulation;
+}
+#decision-grid .decision-toggle:focus-visible { outline: 3px solid var(--gold-600); outline-offset: 4px; }
+#decision-grid .decision-back .text-link:focus-visible { outline: 3px solid var(--gold-600); outline-offset: 4px; }
+@media (prefers-reduced-motion: reduce) {
+  #decision-grid .is-flippable .decision-flip-inner,
+  #decision-grid .is-flippable.is-open .decision-flip-inner,
+  #decision-grid .is-flippable .decision-back { transition: none; transform: none; }
+  #decision-grid .is-flippable .decision-back,
+  #decision-grid .is-flippable.is-open .decision-front { visibility: hidden; }
+  #decision-grid .is-flippable.is-open .decision-back { visibility: visible; }
+}
+
+/* Homepage principles: a title lift and content reveal, without resizing cards. */
+#principles-grid .principle-card.is-revealable {
+  min-height: 180px;
+  min-width: 0;
+  overflow: visible;
+}
+#principles-grid .is-revealable h3 {
+  position: absolute;
+  top: 50%;
+  left: 1.35rem;
+  right: 1.35rem;
+  margin: 0;
+  text-align: center;
+  transform: translateY(-50%);
+  transition: top .28s ease, transform .28s ease;
+  pointer-events: none;
+}
+#principles-grid .is-revealable.is-revealed h3 { top: 1.35rem; transform: translateY(0); }
+#principles-grid .is-revealable p {
+  margin-top: calc(var(--principle-title-height, 2.4rem) + .75rem);
+  visibility: hidden;
+  opacity: 0;
+  transform: translateY(8px);
+  transition: opacity .22s ease, transform .28s ease, visibility .22s;
+  pointer-events: none;
+}
+#principles-grid .is-revealable.is-revealed p { visibility: visible; opacity: 1; transform: translateY(0); }
+#principles-grid .principle-toggle {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  border: 0;
+  border-radius: inherit;
+  padding: 0;
+  background: transparent;
+  cursor: pointer;
+  touch-action: manipulation;
+}
+#principles-grid .principle-toggle:focus-visible { outline: 3px solid var(--gold-600); outline-offset: 4px; }
+.ai-section .learning-visuals { display: grid; gap: 1rem; min-width: 0; }
+.ai-section .learning-illustration { margin: 0; }
+.ai-section .learning-illustration img {
+  display: block;
+  width: 100%;
+  max-width: 420px;
+  height: auto;
+  margin-inline: auto;
+  border-radius: var(--radius-sm);
+}
+.ai-section .learning-illustration figcaption { margin-top: .7rem; text-align: center; }
+.ai-section .learning-illustration strong { display: block; color: #fff; font-size: .98rem; line-height: 1.45; }
+.ai-section .learning-illustration figcaption span { display: block; margin-top: .35rem; color: #cad7de; font-size: .78rem; line-height: 1.5; }
+@media (prefers-reduced-motion: reduce) {
+  #principles-grid .is-revealable h3,
+  #principles-grid .is-revealable p { transition: none; }
+}
