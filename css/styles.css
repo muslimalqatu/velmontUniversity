@@ -671,19 +671,40 @@ body[data-milestone="4"] .page-links a { min-height: 44px; display: inline-flex;
 }
 #principles-grid .principle-toggle:focus-visible { outline: 3px solid var(--gold-600); outline-offset: 4px; }
 .ai-section .learning-visuals { display: grid; gap: 1rem; min-width: 0; }
-.ai-section .learning-illustration { margin: 0; }
+.ai-section .learning-illustration {
+  margin: 0;
+  min-width: 0;
+  padding: clamp(.6rem, 1.2vw, .85rem);
+  background: #fff;
+  border: 1px solid #e2e7ea;
+  border-radius: var(--radius-md);
+}
 .ai-section .learning-illustration img {
   display: block;
   width: 100%;
-  max-width: 420px;
+  max-width: 100%;
   height: auto;
-  margin-inline: auto;
-  border-radius: var(--radius-sm);
+  aspect-ratio: 5 / 3;
+  object-fit: cover;
+  object-position: 50% 14%;
+  border-radius: calc(var(--radius-md) - .4rem);
 }
-.ai-section .learning-illustration figcaption { margin-top: .7rem; text-align: center; }
-.ai-section .learning-illustration strong { display: block; color: #fff; font-size: .98rem; line-height: 1.45; }
-.ai-section .learning-illustration figcaption span { display: block; margin-top: .35rem; color: #cad7de; font-size: .78rem; line-height: 1.5; }
+.ai-section .learning-illustration figcaption { padding: .25rem .25rem .1rem; margin-top: .7rem; text-align: center; }
+.ai-section .learning-illustration strong { display: block; color: var(--navy-950); font-size: .98rem; line-height: 1.45; }
+.ai-section .learning-illustration figcaption span { display: block; margin-top: .35rem; color: var(--muted); font-size: .78rem; line-height: 1.5; }
+/* Entrance wrappers own motion; the nested cards retain their interactions. */
+.scroll-card-shell { display: grid; min-width: 0; }
 @media (prefers-reduced-motion: reduce) {
   #principles-grid .is-revealable h3,
   #principles-grid .is-revealable p { transition: none; }
 }
+
+/* November 5: scoped Illinois and future-expansion illustrations. */
+.illinois-layout { display: grid; grid-template-columns: 1.1fr 1fr; gap: clamp(1.5rem, 4vw, 3rem); align-items: center; }
+.illinois-layout .section-heading { margin-bottom: 0; }
+.illinois-illustration { margin: 0; min-width: 0; }
+.illinois-illustration img { display: block; width: 100%; height: auto; border-radius: var(--radius-md); }
+.international-illustration { width: min(100%, 520px); margin: 1.5rem auto 0; }
+.international-illustration img { display: block; width: 100%; height: auto; }
+.international-illustration figcaption { margin-top: .75rem; color: var(--muted); font-size: .85rem; line-height: 1.6; text-align: center; }
+@media (max-width: 900px) { .illinois-layout { grid-template-columns: 1fr; } .illinois-illustration { width: min(100%, 520px); justify-self: center; } }
